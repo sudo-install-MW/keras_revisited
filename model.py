@@ -29,9 +29,19 @@ class Model:
                                input_shape=(150, 150, 3),)
 
         model.add(model_vgg_base)
+        model_vgg_base.trainable = True
+        set_trainable = False
+
+        for layer in model_vgg_base.layers:
+            if layer.name == 'block5_conv1':
+                set_trainable = True
+            if set_trainable:
+                layer.trainable = True
+            else:
+                layer.trainable = False
 
         model.add(layers.Flatten())
         model.add(layers.Dense(256, activation='relu'))
         model.add(layers.Dense(1, activation='sigmoid'))
-        model_vgg_base.trainable = False
+
         return model
