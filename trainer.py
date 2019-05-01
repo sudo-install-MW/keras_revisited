@@ -3,8 +3,8 @@ from keras_revisited.model import Model
 from keras import optimizers
 import matplotlib.pyplot as plt
 
-train_dir = "/media/mash-compute/eatsmart/DeepLearning/keras_revisited/data/data_processed/train"
-val_dir = "/media/mash-compute/eatsmart/DeepLearning/keras_revisited/data/data_processed/validation"
+train_dir = "/media/mash-compute/eatsmart/DeepLearning/keras_revisited/data/food_data/train"
+val_dir = "/media/mash-compute/eatsmart/DeepLearning/keras_revisited/data/food_data/test"
 
 # preprocess image
 train_datagen = ImageDataGenerator(rescale=1. / 255,
@@ -19,21 +19,20 @@ train_datagen = ImageDataGenerator(rescale=1. / 255,
 test_datagen = ImageDataGenerator(rescale=1. / 255)
 
 train_generator = train_datagen.flow_from_directory(train_dir,
-                                                    target_size=(150, 150),
-                                                    batch_size=256,
-                                                    class_mode='binary')
+                                                    target_size=(224, 224),
+                                                    batch_size=32,
+                                                    class_mode='categorical')
 
 validation_generator = test_datagen.flow_from_directory(val_dir,
-                                                        target_size=(150, 150),
-                                                        batch_size=128,
-                                                        class_mode='binary')
+                                                        target_size=(224, 224),
+                                                        batch_size=32,
+                                                        class_mode='categorical')
 
 classifier = Model()
 model = classifier.create_model()
 
-print(model.trainable_weights)
 
-model.compile(loss='binary_crossentropy',
+model.compile(loss='categorical_crossentropy',
               optimizer=optimizers.RMSprop(lr=2e-5),
               metrics=['acc'])
 

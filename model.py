@@ -1,6 +1,7 @@
 from keras import layers
 from keras.applications import VGG16
 from keras import models
+from keras.applications import MobileNetV2
 
 
 class Model:
@@ -24,24 +25,37 @@ class Model:
         # model.add(layers.Dense(512, activation='relu'))
         #
         # model.add(layers.Dense(1, activation='sigmoid'))
-        model_vgg_base = VGG16(weights='imagenet',
-                               include_top=False,
-                               input_shape=(150, 150, 3),)
+        # model_vgg_base = VGG16(weights='imagenet',
+        #                        include_top=False,
+        #                        input_shape=(150, 150, 3),)
+        #
+        # model.add(model_vgg_base)
+        # model_vgg_base.trainable = True
+        # set_trainable = False
+        #
+        # for layer in model_vgg_base.layers:
+        #     if layer.name == 'block5_conv1':
+        #         set_trainable = True
+        #     if set_trainable:
+        #         layer.trainable = True
+        #     else:
+        #         layer.trainable = False
+        #
+        # model.add(layers.Flatten())
+        # model.add(layers.Dense(256, activation='relu'))
+        # model.add(layers.Dense(84, activation='sigmoid'))
 
-        model.add(model_vgg_base)
-        model_vgg_base.trainable = True
-        set_trainable = False
+        model_mobilenet_v2 = MobileNetV2(input_shape=(224, 224, 3),
+                                         alpha=1.0,
+                                         include_top=False,
+                                         weights='imagenet',
+                                         input_tensor=None,
+                                         pooling=None,)
 
-        for layer in model_vgg_base.layers:
-            if layer.name == 'block5_conv1':
-                set_trainable = True
-            if set_trainable:
-                layer.trainable = True
-            else:
-                layer.trainable = False
-
+        model.add(model_mobilenet_v2)
         model.add(layers.Flatten())
         model.add(layers.Dense(256, activation='relu'))
-        model.add(layers.Dense(1, activation='sigmoid'))
+        model.add(layers.Dense(83, activation='softmax'))
+        print(model.summary())
 
         return model
